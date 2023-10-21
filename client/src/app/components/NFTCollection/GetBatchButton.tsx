@@ -1,6 +1,6 @@
 import { useSimpleUserStore } from "@root/app/context"
 import { Web3Button } from "@thirdweb-dev/react"
-import { subProfileTBAAbi, subProfileTBAAddress, testNFTAbi1 } from "../../../../constants"
+import { subProfileTBAAbi } from "../../../../constants"
 
 type Props = {
     subProfileAddress: string
@@ -14,7 +14,7 @@ const GetBatchButton = ({ subProfileAddress }: Props) => {
             contractAbi={subProfileTBAAbi}
             contractAddress={subProfileAddress}
             action={(contract: any) => {
-                contract.call("subProfileBadges", [])
+                contract.call("getSubProfileBadges", [])
             }}
             onSuccess={(result: any) => {}}
             onError={(error) => alert("Something went wrong!")}

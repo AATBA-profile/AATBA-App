@@ -12,18 +12,16 @@ type Props = {
 }
 
 const SubProfileCard = ({ profile, cn, userAddress, contract, simpleUser }: Props) => {
-    const { setSimpleUserAccount, simpleUserAccount } = useSimpleUserStore()
-    // console.log("SIMPLE USER", simpleUser);
-    
+    const { setSimpleUserAccount, simpleUserAccount } = useSimpleUserStore()    
 
     useEffect(() => {
         simpleUser ? setSimpleUserAccount(simpleUser) : null
     }, [simpleUser])
 
     return (
-        <div key={profile.id} className={`${cn} relative w-60 gap-4 rounded-3xl`}>
+        <div key={profile.id} className={`${cn} relative w-60 gap-4 rounded-3xl border h-96`}>
             <SubProfileCardHeader profile={profile} contract={contract} />
-            <SubProfileCardBody userAddress={userAddress} profile={profile} cn="h-[400px]" />
+            <SubProfileCardBody userAddress={userAddress} profile={profile} cn="h-96" />
         </div>
     )
 }

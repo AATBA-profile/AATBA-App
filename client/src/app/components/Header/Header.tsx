@@ -15,7 +15,7 @@ const Header = (props: Props) => {
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between">
             {/* logo */}
             <div className="">
-                <Image height={200} width={200} alt="logo aatba" src={"/logo.svg"} className="" onClick={() => push("/")} />
+                <Image height={200} width={200} alt="logo aatba" src={"/logo.svg"} className="dark:invert hover:cursor-pointer" onClick={() => push("/")} />
                 {/* <h1 className="ml-1 pl-4 text-5xl font-bold tracking-widest">
                     {" "}
                     <span>AA</span>
@@ -27,17 +27,18 @@ const Header = (props: Props) => {
                 </div> */}
             </div>
             <div className="flex items-center justify-between space-x-4 pr-2">
-                {connected ? (
+                
                     <ConnectWallet
+                        className="bg-muted-foreground dark:bg-slate-800/60 dark:text-muted-foreground dark:hover:bg-slate-700/60 hover:bg-gray-200 animate-pulse"
                         btnTitle="Login"
                         displayBalanceToken={"false"}
-                        theme={theme === "light" ? "light" : "dark"}
+                        // theme={theme === "light" ? "light" : "dark"}
                         dropdownPosition={{
                             side: "bottom",
                             align: "center",
                         }}
                     />
-                ) : null}
+                
                 <ThemeToggle />
             </div>
         </div>

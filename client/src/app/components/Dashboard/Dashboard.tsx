@@ -1,21 +1,19 @@
 import { useSimpleContract, useUserAccountFactory } from "@hooks/index"
+import { useEducationStore, useHackathonStore, useSimpleUserStore, useWorkStore } from "@root/app/context"
 import { useEffect, useState } from "react"
 import HashLoader from "react-spinners/HashLoader"
 import { SubProfile as SubProfileType } from "../../../../typings"
 import { CreateUserAccount, PageBanner, SubProfiles, Title } from "../index"
-import { useEducationStore, useHackathonStore, useSimpleUserStore, useWorkStore } from "@root/app/context"
-import { Web3AuthModalPack, Web3AuthConfig } from '@safe-global/auth-kit'
-import { Web3AuthOptions } from '@web3auth/modal'
-import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
+import { useAddress } from "@thirdweb-dev/react"
 
 type Props = {
     userAddress: string
 }
 
-const UserAccount = ({ userAddress }: Props) => {
+const Dashboard = ({ userAddress }: Props) => {
     const [subProfiles, setSubProfiles] = useState<SubProfileType[]>([
-        { id: 0, name: "Work", profilePic: "/jobs.png", contract: [], subProfileAddress: "" },
-        { id: 1, name: "Hackathon", profilePic: "/contest.png", contract: [], subProfileAddress: "" },
+        { id: 0, name: "Work", profilePic: "/work.png", contract: [], subProfileAddress: "" },
+        { id: 1, name: "Hackathon", profilePic: "/hackathon.png", contract: [], subProfileAddress: "" },
         { id: 2, name: "Education", profilePic: "/education.png", contract: [], subProfileAddress: "" },
         { id: 3, name: "Create", profilePic: "/create.png", contract: [], subProfileAddress: "" },
     ])
@@ -24,31 +22,30 @@ const UserAccount = ({ userAddress }: Props) => {
     const { workSubProfileAddress, setWorkSubProfileAddress } = useWorkStore()
     const { hackathonSubProfileAddress, setHackathonSubProfileAddress } = useHackathonStore()
     const { educationSubProfileAddress, setEducationSubProfileAddress } = useEducationStore()
-    const [getUserAccount] = useUserAccountFactory()
-    const userAccountResponse = getUserAccount()
 
+    const user = useAddress()
+    
     // get data from smart contract
-    const [getSubProfile] = useSimpleContract()
-    const work = getSubProfile(0)
-    const hackathon = getSubProfile(1)
-    const education = getSubProfile(2)
+    const [getUserAccount] = useUserAccountFactory()
+    const userAccountResponse = getUserAccount(user!)
 
-    // Adding the AA support
-    const web3AuthConfig: Web3AuthConfig = {
-        txServiceUrl: 'https://safe-transaction-goerli.safe.global'
-      }
-      
-    // Instantiate and initialize the pack
-    const web3AuthModalPack = new Web3AuthModalPack(web3AuthConfig)
-    await web3AuthModalPack.init({ options, adapters: [openloginAdapter], modalConfig })
+    useEffect(() => {
+      setSimpleUserAccount(userAccountResponse?.data);
+
+    }, [userAccountResponse?.data]);
+
+    const [getSubProfile] = useSimpleContract()
+    const work = getSubProfile(0, simpleUserAccount)
+    const hackathon = getSubProfile(1, simpleUserAccount)
+    const education = getSubProfile(2, simpleUserAccount)
 
     // append the subProfile contract to the initial state
     // Todo: move to globale state
     useEffect(() => {
         if ((work?.data && !work.isLoading) || (hackathon?.data && !hackathon.isLoading) || (education?.data && !education.isLoading)) {
             const updatedArray: any = subProfiles.map((profile) => {
-                setWorkSubProfileAddress(work?.data?.subProfileAddress)
                 if (profile.name === "Work") {
+                    setWorkSubProfileAddress(work?.data?.subProfileAddress)
                     return {
                         ...profile,
                         contract: work?.data,
@@ -96,10 +93,10 @@ const UserAccount = ({ userAddress }: Props) => {
     ) : userAccountResponse && !userAccountResponse.isLoading && userAccountResponse.data !== "0x0000000000000000000000000000000000000000" ? (
         // * User Account available with valid address
         // Show sub profiles, if any
-        <section className="container mt-44 w-screen max-w-6xl">
+        <section className="container my-44 w-screen max-w-6xl">
             <PageBanner userAccountResponse={userAccountResponse} />
             <Title title="My Profiles" cn="text-4xl font-semibold tracking-wide mt-12 pl-4" />
-            <SubProfiles userAddress={userAddress} subProfiles={subProfiles} />
+            <SubProfiles userAddress={userAddress} subProfiles={subProfiles} user={userAccountResponse.data} />
         </section>
     ) : (
         // * No User Account available
@@ -109,4 +106,4 @@ const UserAccount = ({ userAddress }: Props) => {
     )
 }
 
-export default UserAccount
+export default Dashboard
