@@ -4,6 +4,9 @@ import HashLoader from "react-spinners/HashLoader"
 import { SubProfile as SubProfileType } from "../../../../typings"
 import { CreateUserAccount, PageBanner, SubProfiles, Title } from "../index"
 import { useEducationStore, useHackathonStore, useSimpleUserStore, useWorkStore } from "@root/app/context"
+import { Web3AuthModalPack, Web3AuthConfig } from '@safe-global/auth-kit'
+import { Web3AuthOptions } from '@web3auth/modal'
+import { OpenloginAdapter } from '@web3auth/openlogin-adapter'
 
 type Props = {
     userAddress: string
@@ -21,6 +24,13 @@ const UserAccount = ({ userAddress }: Props) => {
     const { workSubProfileAddress, setWorkSubProfileAddress } = useWorkStore()
     const { hackathonSubProfileAddress, setHackathonSubProfileAddress } = useHackathonStore()
     const { educationSubProfileAddress, setEducationSubProfileAddress } = useEducationStore()
+    const web3AuthConfig: Web3AuthConfig = {
+        txServiceUrl: 'https://safe-transaction-goerli.safe.global'
+      }
+      
+    // Instantiate and initialize the pack
+    const web3AuthModalPack = new Web3AuthModalPack(web3AuthConfig)
+    await web3AuthModalPack.init({ options, adapters: [openloginAdapter], modalConfig })
     const [getUserAccount] = useUserAccountFactory()
     const userAccountResponse = getUserAccount()
 
