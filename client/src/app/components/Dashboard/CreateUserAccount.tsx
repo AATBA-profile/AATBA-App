@@ -1,5 +1,5 @@
-import { Web3Button, useAddress } from "@thirdweb-dev/react"
-import { userAccountFactoryAbi, userAccountFactoryAddress } from "../../../../constants"
+import { Web3Button, useChainId, useAddress } from "@thirdweb-dev/react"
+import { userAccountFactoryAbi } from "../../../../constants"
 import ethers from 'ethers'
 import { EthersAdapter, SafeFactory, SafeAccountConfig } from '@safe-global/protocol-kit'
 import SafeApiKit from '@safe-global/api-kit'
@@ -10,6 +10,10 @@ const provider = new ethers.providers.JsonRpcProvider(RPC_URL)
 type Props = {}
 
 const CreateUserAccount = async (props: Props) => {
+    // set address according to current chain id
+    const chainId = useChainId()
+    const userAccountFactoryAddress =
+        chainId === 1337 ? process.env.NEXT_PUBLIC_HH_USER_ACCOUNT_FACTORY_ADDRESS! : process.env.NEXT_PUBLIC_USER_ACCOUNT_FACTORY_ADDRESS!
     return (
         <Web3Button
             contractAbi={userAccountFactoryAbi}

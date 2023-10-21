@@ -5,6 +5,8 @@ require("dotenv/config");
 require("dotenv/config");
 
 const RPC_URL_SEPOLIA = process.env.RPC_URL_SEPOLIA || "";
+const RPC_URL_SCROLL = process.env.RPC_URL_SCROLL || "";
+const RPC_URL_MANTLE = process.env.RPC_URL_MANTLE || "";
 // const RPC_URL_MAINNET = process.env.RPC_URL_MAINNET;
 const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
 
@@ -32,6 +34,16 @@ module.exports = {
         sepolia: {
             chainId: 11155111,
             url: RPC_URL_SEPOLIA,
+            accounts: [PRIVATE_KEY],
+        },
+        scroll: {
+            chainId: 534351,
+            url: RPC_URL_SCROLL,
+            accounts: [PRIVATE_KEY],
+        },
+        mantle: {
+            chainId: 5001,
+            url: RPC_URL_MANTLE,
             accounts: [PRIVATE_KEY],
         },
     },

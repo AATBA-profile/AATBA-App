@@ -11,6 +11,7 @@ type Props = {
 }
 
 const Dashboard = ({ userAddress }: Props) => {
+
     const [subProfiles, setSubProfiles] = useState<SubProfileType[]>([
         { id: 0, name: "Work", profilePic: "/work.png", contract: [], subProfileAddress: "" },
         { id: 1, name: "Hackathon", profilePic: "/hackathon.png", contract: [], subProfileAddress: "" },
