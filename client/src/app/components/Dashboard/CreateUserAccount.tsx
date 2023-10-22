@@ -14,6 +14,7 @@ const CreateUserAccount = async (props: Props) => {
     const chainId = useChainId()
     const userAccountFactoryAddress =
         chainId === 1337 ? process.env.NEXT_PUBLIC_HH_USER_ACCOUNT_FACTORY_ADDRESS! : process.env.NEXT_PUBLIC_USER_ACCOUNT_FACTORY_ADDRESS!
+    
     return (
         <Web3Button
             contractAbi={userAccountFactoryAbi}
