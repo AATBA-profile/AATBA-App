@@ -4,12 +4,9 @@ import ethers from 'ethers'
 import { EthersAdapter, SafeFactory, SafeAccountConfig } from '@safe-global/protocol-kit'
 import SafeApiKit from '@safe-global/api-kit'
 
-const txServiceUrl = 'https://safe-transaction-goerli.safe.global'
-const RPC_URL='https://eth-goerli.public.blastapi.io'
-const provider = new ethers.providers.JsonRpcProvider(RPC_URL)
 type Props = {}
 
-const CreateUserAccount = async (props: Props) => {
+const CreateUserAccount = (props: Props) => {
     // set address according to current chain id
     const chainId = useChainId()
     const userAccountFactoryAddress =
@@ -23,26 +20,40 @@ const CreateUserAccount = async (props: Props) => {
                 contract.call("createUserAccount", [])
             }}
             onSuccess={(result: any) => {
-                const ethAdapter = new EthersAdapter({
-                    ethers,
-                    signerOrProvider: provider
-                  })
-                const safeService = new SafeApiKit({ txServiceUrl, ethAdapter })
-                const safeFactory = await SafeFactory.create({ ethAdapter: ethAdapter })
-                const userWallet = useAddress()
-                const safeAccountConfig: SafeAccountConfig = {
-                    owners: [result.Account, userWallet],
-                    threshold: 1,
-                  }
-                const safeSdk = await safeFactory.deploySafe({ safeAccountConfig })
-                const safeAddress = safeSdk.getAddress()
-
             }}
             onError={(error) => alert("Something went wrong!")}
         >
             createUserAccount
         </Web3Button>
     )
+}
+
+export async function initProtocolKit(init: any, userAccount: any) {
+    const txServiceUrl = 'https://safe-transaction-goerli.safe.global'
+    const RPC_URL='https://eth-goerli.public.blastapi.io'
+    const provider = new ethers.providers.JsonRpcProvider(RPC_URL)
+    let safeSdk;
+
+    const ethAdapter = new EthersAdapter({
+        ethers,
+        signerOrProvider: provider
+      })
+    const safeService = new SafeApiKit({ txServiceUrl, ethAdapter })
+    const userWallet = useAddress()
+
+    if(!init) {
+        const safeFactory = await SafeFactory.create({ ethAdapter: ethAdapter })
+        const safeAccountConfig: SafeAccountConfig = {
+            owners: [userAccount, userWallet],
+            threshold: 1,
+        }
+        safeSdk = await safeFactory.deploySafe({ safeAccountConfig })
+        init = true
+    } else {
+        // safeSdk = await safeSdk.connect({ ethAdapter, userWallet })
+    }
+    
+    return {safeSdk, safeService}
 }
 
 export default CreateUserAccount
