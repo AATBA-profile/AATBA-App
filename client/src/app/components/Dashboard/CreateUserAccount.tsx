@@ -29,8 +29,8 @@ const CreateUserAccount = (props: Props) => {
 }
 
 export async function initProtocolKit(init: any, userAccount: any) {
-    const txServiceUrl = 'https://safe-transaction-goerli.safe.global'
-    const RPC_URL='https://eth-goerli.public.blastapi.io'
+    const txServiceUrl = 'https://safe-transaction-polygon.safe.global'
+    const RPC_URL='https://mumbai.rpc.thirdweb.com'
     const provider = new ethers.providers.JsonRpcProvider(RPC_URL)
     let safeSdk;
 
